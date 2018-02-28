@@ -108,7 +108,7 @@ From now on, we will drop the subscript in the gradient when clear from context.
 | :------------- | :------------- |
 | linearity      | $\nabla_\mathbf{x}(a f(\mathbf{x}) +b g(\mathbf{x})) = a\nabla_\mathbf{x} f(\mathbf{x}) +b\nabla_\mathbf{x} g(\mathbf{x})$       |
 | product rule | $\nabla_\mathbf{x}(f(\mathbf{x}) g(\mathbf{x})) = g(\mathbf{x})\nabla_\mathbf{x} f(\mathbf{x}) + f(\mathbf{x})\nabla_\mathbf{x} g(\mathbf{x})$|
-|chain rule| $\nabla_{\mathbf{x}} f(g(\mathbf{x})) = \frac{\partial f}{\partial g}\mid_{g(\mathbf{x})} \nabla_\mathbf{x} f(\mathbf{x})$|
+|chain rule | $\nabla_{\mathbf{x}} f(g(\mathbf{x})) = \frac{\partial f}{\partial g}\mid_{g(\mathbf{x})} \nabla_\mathbf{x} f(\mathbf{x})$|
 | quadratic term | $\nabla_\mathbf{x} \left(\frac{1}{2}\mathbf{x}^\top A\mathbf{x}\right)= A\mathbf{x}$|
 |linear term| $\nabla_\mathbf{x} (\mathbf{b}^\top\mathbf{x})=\mathbf{b}$|
 |constant term |$\nabla_\mathbf{x} c = 0$ |
@@ -419,7 +419,7 @@ with $\beta\in[0,1)$ called the *momentum parameter*.
 > **initialize** $\Delta \mathbf{x}= \mathbf{0}$
 >
 > **repeat**
->> 1. $\Delta \mathbf{x} := \beta \Delta \mathbf{x}- (1-\beta)P\mathbf{x}$
+>> 1. $\Delta \mathbf{x} := \beta \Delta \mathbf{x}- (1-\beta)(P\mathbf{x}+\mathbf{q})$
 >> 2. *Line search*. Choose optimal $t>0$.
 >> 3. *Update*. $\mathbf{x}:=\mathbf{x} + t \Delta \mathbf{x}$.
 >
