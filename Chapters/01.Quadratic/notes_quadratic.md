@@ -9,6 +9,7 @@
 ## Motivation
 
 Quadratic systems are important! Firstly, systems close to their maximum can closely be approximated by a quadratic system, studying the minimization of quadratic systems can teach us about minimization of general convex functions. Quadratic systems are also important in their own right! Many statistical models, graph problems, molecular models etc. can be formulated as quadratic systems:
+
 - least-square minimization problems
 - inference using multivariate normal distributions
 - molecular modeling using spring-mass systems
@@ -107,7 +108,7 @@ From now on, we will drop the subscript in the gradient when clear from context.
 | :------------- | :------------- |
 | linearity      | $\nabla_\mathbf{x}(a f(\mathbf{x}) +b g(\mathbf{x})) = a\nabla_\mathbf{x} f(\mathbf{x}) +b\nabla_\mathbf{x} g(\mathbf{x})$       |
 | product rule | $\nabla_\mathbf{x}(f(\mathbf{x}) g(\mathbf{x})) = g(\mathbf{x})\nabla_\mathbf{x} f(\mathbf{x}) + f(\mathbf{x})\nabla_\mathbf{x} g(\mathbf{x})$|
-|chain rule| $\nabla_{\mathbf{x}} f(g(\mathbf{x})) = \frac{\partial f}{\partial g}\mid_{g(\mathbf{x})} \nabla_\mathbf{x} f(\mathbf{x})$|
+|chain rule | $\nabla_{\mathbf{x}} f(g(\mathbf{x})) = \frac{\partial f}{\partial g}\mid_{g(\mathbf{x})} \nabla_\mathbf{x} f(\mathbf{x})$|
 | quadratic term | $\nabla_\mathbf{x} \left(\frac{1}{2}\mathbf{x}^\top A\mathbf{x}\right)= A\mathbf{x}$|
 |linear term| $\nabla_\mathbf{x} (\mathbf{b}^\top\mathbf{x})=\mathbf{b}$|
 |constant term |$\nabla_\mathbf{x} c = 0$ |
@@ -187,7 +188,7 @@ def solve_nd_quadratic(P, q, r=0):
 
 Consider $L_2$ regularized ridge regression:
 $$
-\min_\mathbf{x}\, (\mathbf{y} - B\mathbf{x})^\top(\mathbf{y} - B\mathbf{x}) + c\cdot \mathbf{x}^\top\mathbf{x}\,,
+\min_\mathbf{x}\, \frac{1}{2}(\mathbf{y} - B\mathbf{x})^\top(\mathbf{y} - B\mathbf{x}) + \frac{c}{2}\cdot \mathbf{x}^\top\mathbf{x}\,,
 $$
 with $c>0$. Write this in the standard form of a quadratic system and show that it is convex. Give the expression for the minimizer.
 
@@ -231,6 +232,8 @@ Below is the general pseudocode of a general descent method:
 >> 3. *Update*. $\mathbf{x}:=\mathbf{x} + t \Delta \mathbf{x}$.
 >
 > **until** stopping criterion is reached.
+>
+> **Output**: $\mathbf{x}$
 
 Usually, the convergence criterion is of the form
 $$
@@ -369,7 +372,7 @@ $$
 which allows us to rewrite the error in closed-form:
 
 $$
-f(\mathbf{x}^{(k)}) - f(\mathbf{x}^\star) = \frac{1}{2}\sum_{i=1}^n (1-t\lambda_i)^{2k}\lambda_i[(\mathbf{U}_i)^\top(\mathbf{x}^{(0)}-\mathbf{x}^\star)]^2\,.
+f(\mathbf{x}^{(k)}) - f(\mathbf{x}^\star) = \frac{1}{2}\sum_{i=1}^n (1-t\lambda_i)^{2k}\lambda_i[(\mathbf{u}_i)^\top(\mathbf{x}^{(0)}-\mathbf{x}^\star)]^2\,.
 $$
 
 Here, we see that:
@@ -383,7 +386,7 @@ Here, we see that:
 
 Furthermore, it can be shown that if we use an exact line search for the step size, the error $f(\mathbf{x}^{(k)}) - f(\mathbf{x}^\star)\leq \epsilon$ we need fewer than
 $$
-\frac{\log((f(\mathbf{x}^{(k)}) - f(\mathbf{x}^\star))/\epsilon)}{\log(1/c)}\,,
+\frac{\log((f(\mathbf{x}^{(0)}) - f(\mathbf{x}^\star))/\epsilon)}{\log(1/c)}\,,
 $$
 with $c=1-\frac{\lambda_1}{\lambda_n}<1$. The quantity $\kappa=\frac{\lambda_n}{\lambda_1}$ is called the *condition number* and largely determines the convergence. We observe:
 
@@ -407,20 +410,22 @@ $$
 $$
 \mathbf{x}^{(k+1)} = \mathbf{x}^{(k)} + t^{(k)}\Delta \mathbf{x}^{(k+1)}\,,
 $$
-with $\beta\in[0,1]$ called the *momentum parameter*.
+with $\beta\in[0,1)$ called the *momentum parameter*.
 
 ### Gradient descent algorithm with momentum
 
-> **given** a starting point $\mathbf{x}$,  $\beta$
+> **given** a starting point $\mathbf{x}$,  $\beta\in[0,1)$
 >
 > **initialize** $\Delta \mathbf{x}= \mathbf{0}$
 >
 > **repeat**
->> 1. $\Delta \mathbf{x} := \beta \Delta \mathbf{x}- (1-\beta)P\mathbf{x}$
+>> 1. $\Delta \mathbf{x} := \beta \Delta \mathbf{x}- (1-\beta)(P\mathbf{x}+\mathbf{q})$
 >> 2. *Line search*. Choose optimal $t>0$.
 >> 3. *Update*. $\mathbf{x}:=\mathbf{x} + t \Delta \mathbf{x}$.
 >
 > **until** stopping criterion is reached.
+>
+> **Output** $\mathbf{x}$
 
 ### Illustration of momentum
 
